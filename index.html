@@ -1,0 +1,515 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);padding:0 16px 24px 16px}
+.nav{display:flex;gap:3px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.4rem;flex-wrap:wrap}
+.nb{padding:8px 15px;font-size:13px;border:none;background:none;cursor:pointer;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-1px;font-family:var(--font-sans)}
+.nb.on{color:#185FA5;border-bottom-color:#185FA5;font-weight:500}
+.pg{display:none}.pg.on{display:block}
+.ib{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.ib h3{font-size:15px;font-weight:500;margin-bottom:.4rem}
+.ib p{font-size:14px;color:var(--color-text-secondary);line-height:1.65}
+.merke{border-left:3px solid #185FA5;background:#E6F1FB;color:#0C447C;border-radius:0 6px 6px 0;padding:.75rem 1rem;margin-bottom:1rem;font-size:14px;line-height:1.6}
+.merke.gruen{border-left-color:#3B6D11;background:#EAF3DE;color:#27500A}
+.regel-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+.regel-card{border-radius:var(--border-radius-lg);padding:.85rem 1rem;font-size:13px;line-height:1.65}
+.regel-card.aw{background:#FAECE7;border:0.5px solid #F0997B}
+.regel-card.er{background:#EAF3DE;border:0.5px solid #97C459}
+.regel-card .rt{font-weight:500;font-size:14px;margin-bottom:.3rem}
+.regel-card.aw .rt{color:#993C1D}
+.regel-card.er .rt{color:#3B6D11}
+.tk-pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1rem}
+.tk{border:0.5px solid var(--color-border-secondary);border-radius:6px;overflow:hidden}
+.tk-name{padding:5px 10px;font-size:12px;font-weight:500;text-align:center;color:#fff}
+.tk-sh{display:grid;grid-template-columns:1fr 1fr;background:#E6F1FB}
+.tks{padding:3px 8px;font-size:11px;font-weight:500;color:#0C447C;border-right:2px solid #185FA5;border-bottom:0.5px solid #BBBBBB}
+.tkh{padding:3px 8px;font-size:11px;font-weight:500;color:#0C447C;text-align:right;border-bottom:0.5px solid #BBBBBB}
+.tk-body{display:grid;grid-template-columns:1fr 1fr}
+.tkc{padding:5px 8px;font-size:12px;min-height:28px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tkc.s{border-right:2px solid #185FA5}
+.tkc.h{text-align:right}
+.tkc.bold{font-weight:500}
+.tkc.leer{color:var(--color-text-tertiary);font-style:italic;font-size:11px}
+.tkc.guv{color:#185FA5;font-weight:500}
+.tkc.sum{background:var(--color-background-secondary);font-weight:500;font-size:11px;border-top:1.5px double var(--color-border-primary)}
+.prog{display:flex;gap:4px;margin-bottom:1.25rem}
+.ps{height:3px;flex:1;border-radius:2px;background:var(--color-border-tertiary)}
+.ps.done{background:#185FA5}
+.etitle{font-size:16px;font-weight:500;margin-bottom:.25rem}
+.esub{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.1rem;line-height:1.5}
+.gf-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:.75rem 1rem;margin-bottom:1rem}
+.gf-lbl{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+.gf-text{font-size:14px;color:var(--color-text-primary);line-height:1.6}
+.pool-box{background:var(--color-background-secondary);border:0.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:.65rem .85rem;margin-bottom:.85rem;display:flex;flex-wrap:wrap;gap:5px}
+.pool-lbl{font-size:11px;font-weight:500;color:var(--color-text-tertiary);width:100%;margin-bottom:2px}
+.chip{padding:5px 13px;font-size:13px;border:1.5px solid #185FA5;border-radius:16px;cursor:pointer;background:var(--color-background-primary);color:#185FA5;font-weight:500;user-select:none}
+.chip:hover{background:#E6F1FB}
+.chip.sel{background:#185FA5;color:#fff}
+.chip.used{opacity:.3;pointer-events:none;border-style:dashed}
+.drop-cell{background:var(--color-background-secondary);color:var(--color-text-tertiary);font-style:italic;cursor:pointer;font-size:11px}
+.drop-cell:hover{background:#E6F1FB;color:#185FA5}
+.placed{background:#E6F1FB;color:#0C447C;font-weight:500;cursor:pointer;font-style:normal}
+.correct{background:#EAF3DE;color:#27500A;font-weight:500;cursor:default}
+.wrong{background:#FCEBEB;color:#791F1F;cursor:default}
+.hint-box{background:var(--color-background-secondary);border-radius:4px;padding:.45rem .75rem;font-size:12px;color:var(--color-text-secondary);margin-bottom:.75rem;border-left:2px solid var(--color-border-secondary)}
+.bs-row{display:grid;grid-template-columns:1fr 36px 1fr;gap:6px;align-items:center;margin-bottom:8px}
+.bsep{text-align:center;font-size:13px;font-weight:500;color:var(--color-text-secondary)}
+select{font-size:12px;padding:6px 8px;border:1.5px solid var(--color-border-secondary);border-radius:6px;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);width:100%;cursor:pointer}
+select.ok{border-color:#3B6D11;background:#EAF3DE;color:#27500A}
+select.wr{border-color:#E24B4A;background:#FCEBEB;color:#791F1F}
+.qc{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.85rem 1rem;margin-bottom:.85rem}
+.qnr{font-size:10px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.qt{font-size:14px;font-weight:500;margin-bottom:.6rem;line-height:1.45}
+.opt{display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:8px 12px;font-size:13px;border:1.5px solid var(--color-border-secondary);border-radius:6px;cursor:pointer;background:var(--color-background-primary);font-family:var(--font-sans);margin-bottom:4px;transition:all .1s}
+.opt:hover{border-color:#185FA5;background:#E6F1FB}
+.opt::before{content:"○";font-size:13px;color:var(--color-text-tertiary);flex-shrink:0}
+.opt.c{background:#EAF3DE;border-color:#3B6D11;color:#27500A;pointer-events:none}
+.opt.c::before{content:"✓";color:#3B6D11}
+.opt.w{background:#FCEBEB;border-color:#E24B4A;color:#791F1F;pointer-events:none}
+.opt.w::before{content:"✗";color:#E24B4A}
+.opt.d{pointer-events:none;opacity:.4}
+.ex{margin-top:.4rem;padding:.45rem .75rem;border-radius:6px;font-size:12px;line-height:1.5;display:none}
+.ex.ok{background:#EAF3DE;color:#27500A;display:block}
+.ex.err{background:#FCEBEB;color:#791F1F;display:block}
+.fb{margin-top:.65rem;padding:.5rem .8rem;border-radius:6px;font-size:13px;font-weight:500;display:none}
+.fb.ok{background:#EAF3DE;color:#27500A;display:block}
+.fb.err{background:#FCEBEB;color:#791F1F;display:block}
+.step-hdr{font-size:13px;font-weight:500;color:#185FA5;margin-bottom:.6rem;padding:.35rem .65rem;background:#E6F1FB;border-radius:4px;display:inline-block}
+.btn{padding:7px 16px;font-size:13px;border:1.5px solid var(--color-border-secondary);border-radius:6px;cursor:pointer;background:var(--color-background-primary);font-family:var(--font-sans);margin-right:6px;font-weight:500;transition:all .1s}
+.btn:hover{border-color:#185FA5;color:#185FA5}
+.btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
+.btn.p:hover{background:#0F4A8A}
+.sw{text-align:center;padding:1.5rem 1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-lg)}
+.sn{font-size:42px;font-weight:500;color:#185FA5}
+.sl{font-size:13px;color:var(--color-text-secondary);margin-bottom:.35rem}
+.sm{font-size:14px;margin-bottom:1rem}
+.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:1.25rem 0}
+.locked{opacity:.4;pointer-events:none}
+</style>
+
+<div class="nav">
+  <button class="nb on" onclick="go('info',this)">Theorie</button>
+  <button class="nb" onclick="go('ex1',this)">Übung 1</button>
+  <button class="nb" onclick="go('ex2',this)">Übung 2</button>
+  <button class="nb" onclick="go('ex3',this)">Übung 3</button>
+</div>
+
+<!-- THEORIE -->
+<div class="pg on" id="pg-info">
+  <p style="font-size:17px;font-weight:500;margin-bottom:1rem">Aufwendungen und Erträge buchen</p>
+
+  <div class="ib">
+    <h3>Buchungsregeln für Erfolgskonten</h3>
+    <p>Aufwendungen und Erträge werden auf eigenen Konten erfasst. Die Buchungsseite richtet sich nach dem EK-Einfluss:</p>
+  </div>
+  <div class="regel-grid">
+    <div class="regel-card aw">
+      <div class="rt">Aufwendungen → Soll</div>
+      <p>Aufwendungen mindern das EK. Buchung im <strong>Soll</strong> des Aufwandskontos.<br><br>Schema: <strong>Aufwandskonto  an  Gegenkonto</strong></p>
+    </div>
+    <div class="regel-card er">
+      <div class="rt">Erträge → Haben</div>
+      <p>Erträge erhöhen das EK. Buchung im <strong>Haben</strong> des Ertragskontos.<br><br>Schema: <strong>Gegenkonto  an  Ertragskonto</strong></p>
+    </div>
+  </div>
+  <div class="merke"><strong>Merke:</strong> Aufwand im Soll · Ertrag im Haben &nbsp;|&nbsp; Schema: Soll-Konto  an  Haben-Konto  Betrag</div>
+
+  <div class="ib">
+    <h3>Beispiel 1 — Aufwand: Gehaltszahlung per Bank (25.000 €)</h3>
+    <p>Buchungssatz: <strong>Gehälter  an  Bankguthaben  25.000 €</strong></p>
+  </div>
+  <div class="tk-pair">
+    <div class="tk">
+      <div class="tk-name" style="background:#993C1D">Gehälter (Aufwandskonto)</div>
+      <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+      <div class="tk-body">
+        <div class="tkc s bold" style="color:#993C1D">Bank  25.000</div>
+        <div class="tkc h leer">—</div>
+      </div>
+    </div>
+    <div class="tk">
+      <div class="tk-name" style="background:#6B7280">Bankguthaben (Bestandskonto)</div>
+      <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+      <div class="tk-body">
+        <div class="tkc s leer">—</div>
+        <div class="tkc h bold" style="color:#993C1D">Gehälter  25.000</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ib">
+    <h3>Beispiel 2 — Ertrag: Zielverkauf an Kunden (60.000 €)</h3>
+    <p>Buchungssatz: <strong>Forderungen a. LL  an  Umsatzerlöse  60.000 €</strong></p>
+  </div>
+  <div class="tk-pair">
+    <div class="tk">
+      <div class="tk-name" style="background:#6B7280">Forderungen a. LL (Bestandskonto)</div>
+      <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+      <div class="tk-body">
+        <div class="tkc s bold" style="color:#3B6D11">Umsatzerlöse  60.000</div>
+        <div class="tkc h leer">—</div>
+      </div>
+    </div>
+    <div class="tk">
+      <div class="tk-name" style="background:#3B6D11">Umsatzerlöse (Ertragskonto)</div>
+      <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+      <div class="tk-body">
+        <div class="tkc s leer">—</div>
+        <div class="tkc h bold" style="color:#3B6D11">Ford. a.LL  60.000</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ib">
+    <h3>Abschluss der Konten am Jahresende</h3>
+    <p style="margin-bottom:.5rem"><strong>Erfolgskonten → über das GuV-Konto:</strong> Alle Aufwands- und Ertragskonten werden über das GuV-Konto abgeschlossen. Der Saldo zeigt Gewinn oder Verlust → wird auf Eigenkapital übertragen.</p>
+    <p><strong>Bestandskonten → über das SBK:</strong> Aktiv- und Passivkonten werden über das Schlussbilanzkonto (SBK) abgeschlossen.</p>
+  </div>
+
+  <div class="merke"><strong>Abschlussbuchungssätze:</strong><br>
+    Aufwandskonto: <strong>GuV-Konto  an  Aufwandskonto</strong><br>
+    Ertragskonto: <strong>Ertragskonto  an  GuV-Konto</strong><br>
+    Bestandskonto (Aktiv): <strong>SBK  an  Aktivkonto</strong> &nbsp;·&nbsp; Bestandskonto (Passiv): <strong>Passivkonto  an  SBK</strong>
+  </div>
+
+  <!-- GuV-Abschluss: 3 Konten nebeneinander, je 2 Zeilen pro Konto -->
+  <p style="font-size:14px;font-weight:500;margin-bottom:.65rem;color:var(--color-text-primary)">Beispiel: Abschluss von Gehälter und Umsatzerlöse über das GuV-Konto</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1rem">
+
+    <!-- Gehälter -->
+    <div class="tk">
+      <div class="tk-name" style="background:#993C1D">Gehälter</div>
+      <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+      <div class="tk-body">
+        <div class="tkc s bold" style="color:#993C1D">Bank  25.000</div>
+        <div class="tkc h guv">GuV  25.000</div>
+      </div>
+      <div class="tk-body">
+        <div class="tkc s sum">25.000</div>
+        <div class="tkc h sum" style="text-align:right">25.000</div>
+      </div>
+    </div>
+
+    <!-- GuV -->
+    <div class="tk">
+      <div class="tk-name" style="background:#185FA5">GuV-Konto</div>
+      <div class="tk-sh"><div class="tks">Aufwend.</div><div class="tkh">Erträge</div></div>
+      <div class="tk-body">
+        <div class="tkc s bold" style="color:#993C1D">Gehälter  25.000</div>
+        <div class="tkc h bold" style="color:#3B6D11">Umsatz  60.000</div>
+      </div>
+      <div class="tk-body">
+        <div class="tkc s guv">EK (Gew.)  35.000</div>
+        <div class="tkc h leer">—</div>
+      </div>
+      <div class="tk-body">
+        <div class="tkc s sum">60.000</div>
+        <div class="tkc h sum" style="text-align:right">60.000</div>
+      </div>
+    </div>
+
+    <!-- Umsatzerlöse -->
+    <div class="tk">
+      <div class="tk-name" style="background:#3B6D11">Umsatzerlöse</div>
+      <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+      <div class="tk-body">
+        <div class="tkc s guv">GuV  60.000</div>
+        <div class="tkc h bold" style="color:#3B6D11">Ford.  60.000</div>
+      </div>
+      <div class="tk-body">
+        <div class="tkc s sum">60.000</div>
+        <div class="tkc h sum" style="text-align:right">60.000</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="merke gruen"><strong>Gewinn = 60.000 − 25.000 = 35.000 €</strong> → GuV-Konto an Eigenkapital 35.000 €  →  EK steigt</div>
+  <button class="btn p" onclick="go('ex1',document.querySelectorAll('.nb')[1])">Zu den Übungen →</button>
+</div>
+
+<!-- ÜBUNG 1 -->
+<div class="pg" id="pg-ex1">
+  <div class="prog"><div class="ps done"></div><div class="ps"></div><div class="ps"></div></div>
+  <div class="etitle">Übung 1 – Buchungssatz-Trainer</div>
+  <div class="esub">Wähle das richtige Soll- und Haben-Konto für jeden Geschäftsvorfall.</div>
+  <div id="bs-rows"></div>
+  <div style="margin-top:.75rem">
+    <button class="btn p" onclick="chkBS()">Überprüfen</button>
+    <button class="btn" onclick="bldBS()">Zurücksetzen</button>
+  </div>
+  <div class="fb" id="fb1"></div>
+  <div id="nx1" style="margin-top:.75rem;display:none"><button class="btn p" onclick="go('ex2',document.querySelectorAll('.nb')[2])">Weiter →</button></div>
+</div>
+
+<!-- ÜBUNG 2 -->
+<div class="pg" id="pg-ex2">
+  <div class="prog"><div class="ps done"></div><div class="ps done"></div><div class="ps"></div></div>
+  <div class="etitle">Übung 2 – T-Konten befüllen und abschließen</div>
+  <div class="esub">Trage die Buchungen in die richtigen Konten ein und schließe die Erfolgskonten über das GuV-Konto ab.</div>
+
+  <!-- Teil 1 -->
+  <div class="step-hdr">Teil 1 — Aufwand buchen: Gehaltszahlung per Bank (25.000 €)</div>
+  <div class="gf-box">
+    <div class="gf-lbl">Geschäftsvorfall</div>
+    <div class="gf-text">Zahlung von Gehältern an Mitarbeiter per Banküberweisung, lt. KA 01 — <strong>25.000,00 €</strong></div>
+  </div>
+  <div class="hint-box">Welches Konto kommt im Soll, welches im Haben? Welches ist das Aufwandskonto?</div>
+  <div class="pool-box" id="pool1">
+    <div class="pool-lbl">Einträge — klicken, dann Seite im Konto anklicken:</div>
+    <span class="chip" id="c1a" data-val="Bankguthaben|25.000" onclick="selChip(this,1)">Bankguthaben  25.000</span>
+    <span class="chip" id="c1b" data-val="Gehälter|25.000" onclick="selChip(this,1)">Gehälter  25.000</span>
+  </div>
+  <div class="tk-pair">
+    <div class="tk">
+      <div class="tk-name" style="background:#993C1D">Gehälter</div>
+      <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+      <div class="tk-body">
+        <div class="tkc s drop-cell" id="t1-geh-s" onclick="dropChip('t1-geh-s',1)">+ hier</div>
+        <div class="tkc h leer">—</div>
+      </div>
+    </div>
+    <div class="tk">
+      <div class="tk-name" style="background:#6B7280">Bankguthaben</div>
+      <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+      <div class="tk-body">
+        <div class="tkc s leer">—</div>
+        <div class="tkc h drop-cell" id="t1-bank-h" onclick="dropChip('t1-bank-h',1)">+ hier</div>
+      </div>
+    </div>
+  </div>
+  <button class="btn p" onclick="chkTK1()">Teil 1 überprüfen</button>
+  <button class="btn" onclick="rstTK1()">Zurücksetzen</button>
+  <div class="fb" id="fb2a"></div>
+
+  <hr class="divider">
+
+  <!-- Teil 2 -->
+  <div id="t2-wrap" class="locked">
+    <div class="step-hdr">Teil 2 — Ertrag buchen: Zielverkauf an Kunden (60.000 €)</div>
+    <div class="gf-box">
+      <div class="gf-lbl">Geschäftsvorfall</div>
+      <div class="gf-text">Zielverkauf von Holzmöbeln an Kunden, lt. AR 01 — <strong>60.000,00 €</strong></div>
+    </div>
+    <div class="hint-box">Welches ist das Ertragskonto? Wo wird ein Ertrag gebucht — Soll oder Haben?</div>
+    <div class="pool-box" id="pool2">
+      <div class="pool-lbl">Einträge — klicken, dann Seite im Konto anklicken:</div>
+      <span class="chip" id="c2a" data-val="Umsatzerlöse|60.000" onclick="selChip(this,2)">Umsatzerlöse  60.000</span>
+      <span class="chip" id="c2b" data-val="Ford. a.LL|60.000" onclick="selChip(this,2)">Ford. a.LL  60.000</span>
+    </div>
+    <div class="tk-pair">
+      <div class="tk">
+        <div class="tk-name" style="background:#6B7280">Forderungen a. LL</div>
+        <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+        <div class="tk-body">
+          <div class="tkc s drop-cell" id="t2-ford-s" onclick="dropChip('t2-ford-s',2)">+ hier</div>
+          <div class="tkc h leer">—</div>
+        </div>
+      </div>
+      <div class="tk">
+        <div class="tk-name" style="background:#3B6D11">Umsatzerlöse</div>
+        <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+        <div class="tk-body">
+          <div class="tkc s leer">—</div>
+          <div class="tkc h drop-cell" id="t2-ums-h" onclick="dropChip('t2-ums-h',2)">+ hier</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn p" onclick="chkTK2()">Teil 2 überprüfen</button>
+    <button class="btn" onclick="rstTK2()">Zurücksetzen</button>
+    <div class="fb" id="fb2b"></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Teil 3 -->
+  <div id="t3-wrap" class="locked">
+    <div class="step-hdr">Teil 3 — Konten über das GuV-Konto abschließen</div>
+    <div class="hint-box">Schließe beide Erfolgskonten über das GuV-Konto ab. Wo erscheint der Abschluss im Aufwandskonto — Soll oder Haben? Und beim Ertragskonto?</div>
+    <div class="pool-box" id="pool3">
+      <div class="pool-lbl">Abschlusseinträge — klicken, dann Seite im Konto anklicken:</div>
+      <span class="chip" id="c3a" data-val="GuV|25.000" onclick="selChip(this,3)">GuV  25.000</span>
+      <span class="chip" id="c3b" data-val="Gehälter|25.000" onclick="selChip(this,3)">Gehälter  25.000</span>
+      <span class="chip" id="c3c" data-val="GuV|60.000" onclick="selChip(this,3)">GuV  60.000</span>
+      <span class="chip" id="c3d" data-val="Umsatzerlöse|60.000" onclick="selChip(this,3)">Umsatzerlöse  60.000</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:.75rem">
+      <!-- Gehälter -->
+      <div class="tk">
+        <div class="tk-name" style="background:#993C1D">Gehälter</div>
+        <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+        <div class="tk-body">
+          <div class="tkc s bold" style="color:#993C1D;font-size:11px">Bank  25.000</div>
+          <div class="tkc h drop-cell" id="t3-geh-h" onclick="dropChip('t3-geh-h',3)">+ Abschluss</div>
+        </div>
+      </div>
+      <!-- GuV -->
+      <div class="tk">
+        <div class="tk-name" style="background:#185FA5">GuV-Konto</div>
+        <div class="tk-sh"><div class="tks">Aufwend.</div><div class="tkh">Erträge</div></div>
+        <div class="tk-body">
+          <div class="tkc s drop-cell" id="t3-guv-s" onclick="dropChip('t3-guv-s',3)">+ hier</div>
+          <div class="tkc h drop-cell" id="t3-guv-h" onclick="dropChip('t3-guv-h',3)">+ hier</div>
+        </div>
+      </div>
+      <!-- Umsatzerlöse -->
+      <div class="tk">
+        <div class="tk-name" style="background:#3B6D11">Umsatzerlöse</div>
+        <div class="tk-sh"><div class="tks">S</div><div class="tkh">H</div></div>
+        <div class="tk-body">
+          <div class="tkc s drop-cell" id="t3-ums-s" onclick="dropChip('t3-ums-s',3)">+ Abschluss</div>
+          <div class="tkc h bold" style="color:#3B6D11;font-size:11px">Ford.  60.000</div>
+        </div>
+      </div>
+    </div>
+    <button class="btn p" onclick="chkTK3()">Teil 3 überprüfen</button>
+    <button class="btn" onclick="rstTK3()">Zurücksetzen</button>
+    <div class="fb" id="fb2c"></div>
+  </div>
+  <div id="nx2" style="margin-top:.75rem;display:none"><button class="btn p" onclick="go('ex3',document.querySelectorAll('.nb')[3])">Weiter →</button></div>
+</div>
+
+<!-- ÜBUNG 3 -->
+<div class="pg" id="pg-ex3">
+  <div class="prog"><div class="ps done"></div><div class="ps done"></div><div class="ps done"></div></div>
+  <div class="etitle">Übung 3 – Multiple Choice</div>
+  <div class="esub">Wähle die richtige Antwort.</div>
+  <div id="mc"></div>
+  <div id="sc" style="display:none"></div>
+</div>
+
+<script>
+var sel={1:null,2:null,3:null};
+var placed={};
+
+function selChip(el,pool){
+  document.querySelectorAll('#pool'+pool+' .chip').forEach(c=>c.classList.remove('sel'));
+  sel[pool]=el;el.classList.add('sel');
+}
+
+function dropChip(cellId,pool){
+  var s=sel[pool];if(!s)return;
+  var cell=document.getElementById(cellId);
+  if(!cell||cell.classList.contains('correct'))return;
+  if(placed[cellId]){var old=document.getElementById(placed[cellId]);if(old)old.classList.remove('used','sel');}
+  placed[cellId]=s.id;
+  cell.textContent=s.dataset.val.replace('|',' ');
+  cell.classList.remove('drop-cell','wrong');cell.classList.add('placed');
+  s.classList.add('used');s.classList.remove('sel');sel[pool]=null;
+}
+
+function checkCells(cells){
+  var ok=0;
+  cells.forEach(({id,val})=>{
+    var c=document.getElementById(id);
+    if(c.textContent.trim()===val){c.classList.remove('placed','wrong','drop-cell');c.classList.add('correct');ok++;}
+    else if(c.classList.contains('placed')){c.classList.add('wrong');}
+  });
+  return ok;
+}
+
+function chkTK1(){
+  var ok=checkCells([{id:'t1-geh-s',val:'Bankguthaben 25.000'},{id:'t1-bank-h',val:'Gehälter 25.000'}]);
+  var fb=document.getElementById('fb2a');
+  if(ok===2){fb.textContent='Korrekt! Aufwand (Gehälter) im Soll, Gegenkonto (Bank) im Haben.';fb.className='fb ok';document.getElementById('t2-wrap').classList.remove('locked');}
+  else{fb.textContent='Noch nicht richtig — rot markierte Felder korrigieren.';fb.className='fb err';}
+}
+function rstTK1(){
+  ['t1-geh-s','t1-bank-h'].forEach(id=>{var c=document.getElementById(id);c.className=id==='t1-geh-s'?'tkc s drop-cell':'tkc h drop-cell';c.textContent='+ hier';delete placed[id];});
+  document.querySelectorAll('#pool1 .chip').forEach(c=>c.classList.remove('used','sel'));
+  document.getElementById('fb2a').className='fb';sel[1]=null;
+}
+
+function chkTK2(){
+  var ok=checkCells([{id:'t2-ford-s',val:'Umsatzerlöse 60.000'},{id:'t2-ums-h',val:'Ford. a.LL 60.000'}]);
+  var fb=document.getElementById('fb2b');
+  if(ok===2){fb.textContent='Korrekt! Gegenkonto (Forderungen) im Soll, Ertrag (Umsatzerlöse) im Haben.';fb.className='fb ok';document.getElementById('t3-wrap').classList.remove('locked');}
+  else{fb.textContent='Noch nicht richtig — rot markierte Felder korrigieren.';fb.className='fb err';}
+}
+function rstTK2(){
+  ['t2-ford-s','t2-ums-h'].forEach(id=>{var c=document.getElementById(id);c.className=id==='t2-ford-s'?'tkc s drop-cell':'tkc h drop-cell';c.textContent='+ hier';delete placed[id];});
+  document.querySelectorAll('#pool2 .chip').forEach(c=>c.classList.remove('used','sel'));
+  document.getElementById('fb2b').className='fb';sel[2]=null;
+}
+
+function chkTK3(){
+  var ok=checkCells([
+    {id:'t3-geh-h',val:'GuV 25.000'},
+    {id:'t3-guv-s',val:'Gehälter 25.000'},
+    {id:'t3-guv-h',val:'Umsatzerlöse 60.000'},
+    {id:'t3-ums-s',val:'GuV 60.000'}
+  ]);
+  var fb=document.getElementById('fb2c');
+  if(ok===4){fb.textContent='Alle Abschlussbuchungen korrekt! Gewinn = 60.000 − 25.000 = 35.000 € → wird auf Eigenkapital übertragen.';fb.className='fb ok';document.getElementById('nx2').style.display='block';}
+  else{fb.textContent=ok+' von 4 Feldern richtig — rot markierte korrigieren.';fb.className='fb err';}
+}
+function rstTK3(){
+  [['t3-geh-h','tkc h drop-cell','+ Abschluss'],['t3-guv-s','tkc s drop-cell','+ hier'],['t3-guv-h','tkc h drop-cell','+ hier'],['t3-ums-s','tkc s drop-cell','+ Abschluss']].forEach(([id,cls,txt])=>{
+    var c=document.getElementById(id);c.className=cls;c.textContent=txt;delete placed[id];
+  });
+  document.querySelectorAll('#pool3 .chip').forEach(c=>c.classList.remove('used','sel'));
+  document.getElementById('fb2c').className='fb';sel[3]=null;
+}
+
+var KONTEN=["Gehälter","Forderungen a. LL","Umsatzerlöse","Bankguthaben","Mietaufwendungen","Rohstoffe","Aufwend. f. Rohstoffe","Zinserträge","Provisionserträge"];
+function mkSel(id){var s=document.createElement('select');s.id=id;s.innerHTML='<option value="">– wählen –</option>'+KONTEN.map(k=>'<option value="'+k+'">'+k+'</option>').join('');return s;}
+var GF=[
+  {l:"GF 1 — Zahlung Gehälter per Bank · 25.000,00 €",s:"Gehälter",h:"Bankguthaben"},
+  {l:"GF 2 — Zielverkauf Holzmöbel an Kunden (AR 01) · 60.000,00 €",s:"Forderungen a. LL",h:"Umsatzerlöse"},
+  {l:"GF 3 — Zahlung Monatsmiete per Bank · 4.000,00 €",s:"Mietaufwendungen",h:"Bankguthaben"},
+  {l:"GF 4 — Zinsgutschrift der Bank (KA 01) · 1.200,00 €",s:"Bankguthaben",h:"Zinserträge"},
+  {l:"GF 5 — Rohstoffverbrauch für Produktion (ME 01) · 18.000,00 €",s:"Aufwend. f. Rohstoffe",h:"Rohstoffe"},
+  {l:"GF 6 — Eingang Vermittlungsprovision per Bank · 3.600,00 €",s:"Bankguthaben",h:"Provisionserträge"},
+];
+function bldBS(){
+  var c=document.getElementById('bs-rows');c.innerHTML='';
+  GF.forEach((g,i)=>{
+    var wrap=document.createElement('div');wrap.style.cssText='margin-bottom:10px;';
+    var lbl=document.createElement('div');lbl.style.cssText='font-size:12px;color:var(--color-text-secondary);margin-bottom:4px;padding:3px 8px;background:var(--color-background-secondary);border-radius:4px;border-left:2px solid #185FA5;';lbl.textContent=g.l;
+    var row=document.createElement('div');row.className='bs-row';
+    var sd=document.createElement('div');sd.appendChild(mkSel('bs-s'+i));
+    var sep=document.createElement('div');sep.className='bsep';sep.textContent='an';
+    var hd=document.createElement('div');hd.appendChild(mkSel('bs-h'+i));
+    row.appendChild(sd);row.appendChild(sep);row.appendChild(hd);
+    wrap.appendChild(lbl);wrap.appendChild(row);c.appendChild(wrap);
+  });
+  document.getElementById('fb1').className='fb';document.getElementById('nx1').style.display='none';
+}
+function chkBS(){
+  var ok=0;
+  GF.forEach((g,i)=>{var se=document.getElementById('bs-s'+i),he=document.getElementById('bs-h'+i);var so=se.value===g.s,ho=he.value===g.h;se.className=so?'ok':'wr';he.className=ho?'ok':'wr';if(so&&ho)ok++;});
+  var fb=document.getElementById('fb1');
+  if(ok===GF.length){fb.textContent='Alle '+ok+' Buchungssätze korrekt!';fb.className='fb ok';document.getElementById('nx1').style.display='block';}
+  else{fb.textContent=ok+' von '+GF.length+' richtig.';fb.className='fb err';}
+}
+
+var MC=[
+  {q:"Auf welcher Seite wird ein Ertrag gebucht?",o:["Im Soll des Ertragskontos","Im Haben des Ertragskontos","Im Soll des Aufwandskontos","Im Haben des Eigenkapitalkontos"],a:1,e:"Erträge erhöhen das EK und werden im Haben des Ertragskontos gebucht."},
+  {q:"Wie lautet der Buchungssatz für Mietaufwendungen per Bank (8.000 €)?",o:["Bank an Mietaufwendungen 8.000 €","Mietaufwendungen an Bank 8.000 €","Eigenkapital an Bank 8.000 €","Bank an Eigenkapital 8.000 €"],a:1,e:"Aufwand im Soll → Mietaufwendungen (S) an Bank (H) 8.000 €."},
+  {q:"Welcher Buchungssatz ist korrekt für eine Zinsgutschrift der Bank (500 €)?",o:["Zinserträge an Bank 500 €","Bank an Zinserträge 500 €","Zinserträge an Eigenkapital 500 €","Bank an Eigenkapital 500 €"],a:1,e:"Ertrag im Haben → Bankguthaben (S) an Zinserträge (H) 500 €."},
+  {q:"Wie werden Aufwandskonten am Jahresende abgeschlossen?",o:["Aufwandskonto an Eigenkapital","Eigenkapital an Aufwandskonto","GuV-Konto an Aufwandskonto","Aufwandskonto an GuV-Konto"],a:2,e:"Abschluss: GuV-Konto (S) an Aufwandskonto (H) — der Aufwand erscheint im Haben des GuV-Kontos."},
+  {q:"Erträge 480.000 € — Aufwendungen 390.000 €. Was folgt?",o:["Verlust 90.000 €, EK sinkt","Gewinn 90.000 €, EK steigt","Kein EK-Einfluss","Verlust 870.000 €"],a:1,e:"Erträge > Aufwendungen → Gewinn 90.000 €. Das EK steigt um diesen Betrag."},
+];
+var ma=new Array(MC.length).fill(null);
+function buildMC(){
+  var c=document.getElementById('mc');c.innerHTML='';
+  MC.forEach((d,i)=>{var card=document.createElement('div');card.className='qc';card.innerHTML='<div class="qnr">Frage '+(i+1)+' von '+MC.length+'</div><div class="qt">'+d.q+'</div>'+d.o.map((o,j)=>'<button class="opt" onclick="pick('+i+','+j+')">'+o+'</button>').join('')+'<div class="ex" id="ex'+i+'"></div>';c.appendChild(card);});
+}
+function pick(qi,oi){
+  if(ma[qi]!==null)return;ma[qi]=oi;
+  document.querySelectorAll('#mc .qc')[qi].querySelectorAll('.opt').forEach((b,j)=>{if(j===MC[qi].a)b.className='opt c';else if(j===oi)b.className='opt w';else b.className='opt d';});
+  var ex=document.getElementById('ex'+qi);ex.textContent=MC[qi].e;ex.className='ex '+(oi===MC[qi].a?'ok':'err');
+  if(ma.every(a=>a!==null))showSc();
+}
+function showSc(){
+  var ok=ma.filter((a,i)=>a===MC[i].a).length,pct=Math.round(ok/MC.length*100);
+  var sc=document.getElementById('sc');sc.style.display='block';
+  sc.innerHTML='<div class="sw"><div class="sn">'+ok+'/'+MC.length+'</div><div class="sl">'+pct+' % richtig</div><div class="sm">'+(pct===100?'Ausgezeichnet!':pct>=70?'Gut gemacht!':'Theorie nochmal anschauen.')+'</div><button class="btn" onclick="rstMC()">Neu versuchen</button><button class="btn p" onclick="sendPrompt(\'KP 2 abgeschlossen\')">Abschließen ↗</button></div>';
+}
+function rstMC(){ma=new Array(MC.length).fill(null);document.getElementById('sc').style.display='none';buildMC();}
+
+function go(id,btn){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));document.getElementById('pg-'+id).classList.add('on');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');
+  if(id==='ex1'&&!document.getElementById('bs-rows').children.length)bldBS();
+  if(id==='ex3'&&!document.getElementById('mc').children.length)buildMC();
+}
+</script>
